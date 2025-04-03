@@ -74,6 +74,47 @@ export OPENAI_API_KEY=your-api-key
 ./gpt.py "text to analyze"
 ```
 
+### Setting Up Aliases
+
+You can create shell aliases for more convenient usage:
+
+#### Bash/Zsh Alias
+
+Add to your `~/.bashrc`, `~/.zshrc`, or equivalent shell configuration file:
+
+```bash
+# For direct Python usage
+alias gpt='OPENAI_API_KEY=your-api-key /path/to/gpt.py'
+
+# For Docker usage
+alias gpt='docker run --rm -e OPENAI_API_KEY=your-api-key ghcr.io/your-username/gpt-analyzer'
+```
+
+Then you can use it simply:
+
+```bash
+# Analyze text directly
+gpt "analyze this problem"
+
+# Pipe output to analyze
+some-command | gpt
+
+# Analyze error output
+some-command 2> error.txt && gpt --error-file error.txt
+```
+
+#### PowerShell Function (Windows)
+
+Add to your PowerShell profile:
+
+```powershell
+function gpt {
+    param([string]$input)
+    $env:OPENAI_API_KEY="your-api-key"
+    python C:\path\to\gpt.py $input
+}
+```
+
 ## CI/CD
 
 This repository includes GitHub Actions workflows for:
