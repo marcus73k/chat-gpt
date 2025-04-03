@@ -12,6 +12,8 @@ def main():
     parser = argparse.ArgumentParser(description='Send inputs to ChatGPT for analysis.')
     parser.add_argument('--api-key', help='OpenAI API key (or set OPENAI_API_KEY env variable)')
     parser.add_argument('--error-file', help='File containing stderr output to analyze')
+    parser.add_argument('--model', default='gpt-3.5-turbo', 
+                       help='OpenAI model to use (default: gpt-3.5-turbo)')
     parser.add_argument('params', nargs='*', help='Additional parameters to analyze')
     args = parser.parse_args()
     
@@ -47,7 +49,7 @@ def main():
     try:
         # Send to ChatGPT for analysis
         response = client.chat.completions.create(
-            model="gpt-4", 
+            model=args.model, 
             messages=[
                 {"role": "system", "content": "You are an expert analyzer. Examine the provided input and offer insights."},
                 {"role": "user", "content": f"Please analyze this data:\n{json.dumps(input_data, indent=2)}"}
@@ -58,7 +60,11 @@ def main():
         print(response.choices[0].message.content)
         
     except Exception as e:
-        print(f"Error calling OpenAI API: {e}", file=sys.stderr)
+        if "model_not_found" in str(e):
+            print(f"Error: The model '{args.model}' was not found or you don't have access to it.", file=sys.stderr)
+            print("Try using a different model with --model parameter (e.g. --model gpt-3.5-turbo)", file=sys.stderr)
+        else:
+            print(f"Error calling OpenAI API: {e}", file=sys.stderr)
         return 1
     
     return 0

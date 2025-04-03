@@ -53,6 +53,9 @@ echo "analyze this text" | ./gpt.py --api-key YOUR_API_KEY
 
 # Using Docker
 docker run --rm -e OPENAI_API_KEY=YOUR_API_KEY ghcr.io/your-username/gpt-analyzer "text to analyze"
+
+# Specify a different model
+./gpt.py --api-key YOUR_API_KEY --model gpt-3.5-turbo-16k "analyze this complex problem"
 ```
 
 ### Analyzing Error Output
