@@ -60,9 +60,18 @@ def main():
         print(response.choices[0].message.content)
         
     except Exception as e:
-        if "model_not_found" in str(e):
+        error_str = str(e).lower()
+        if "model_not_found" in error_str:
             print(f"Error: The model '{args.model}' was not found or you don't have access to it.", file=sys.stderr)
             print("Try using a different model with --model parameter (e.g. --model gpt-3.5-turbo)", file=sys.stderr)
+        elif "invalid api key" in error_str or "invalid_api_key" in error_str:
+            print("Error: The API key provided is invalid.", file=sys.stderr)
+            print("Make sure you're using the full key starting with 'sk-'", file=sys.stderr)
+        elif "exceeded your current quota" in error_str or "insufficient_quota" in error_str:
+            print("Error: You've exceeded your API quota.", file=sys.stderr)
+            print("Check your billing settings at: https://platform.openai.com/account/billing", file=sys.stderr)
+        elif "rate limit" in error_str:
+            print("Error: You've hit rate limits. Please try again in a few moments.", file=sys.stderr)
         else:
             print(f"Error calling OpenAI API: {e}", file=sys.stderr)
         return 1
